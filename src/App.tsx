@@ -1,17 +1,19 @@
 import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
-import { MeshPhongMaterial, IcosahedronGeometry } from "three";
-import { useRef } from "react";
+import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { EffectComposer } from "three-stdlib";
+import RenderPixelatedPass from "./RenderPixelatedPass.ts";
+import PostProcessing from "./PostProcessing.tsx";
+import { useControls } from "leva";
+
+extend({ EffectComposer, RenderPixelatedPass });
 
 const CrystalMesh = () => {
-  // Create a reference for the mesh
   const crystalMesh = useRef<THREE.Mesh>(null!);
 
-  // Basic geometry and material for the crystal
-  const geometry = new IcosahedronGeometry(0.4);
-  const material = new MeshPhongMaterial({
+  const geometry = new THREE.IcosahedronGeometry(0.4);
+  const material = new THREE.MeshPhongMaterial({
     color: 0x2379cf,
     emissive: 0x143542,
     shininess: 100,
@@ -32,24 +34,18 @@ const CrystalMesh = () => {
 const Scene = () => {
   return (
     <>
-      {/* Ambient light */}
       <ambientLight intensity={1.5} color={0x2d3645} />
-
-      {/* Directional light */}
       <directionalLight intensity={0.5} position={[100, 100, 100]} castShadow />
-
-      {/* The crystal mesh */}
       <CrystalMesh />
     </>
   );
 };
 
 const App = () => {
-  // Inline styles to ensure the canvas takes up the full viewport
   const canvasStyle = {
-    width: "100vw", // Viewport width
-    height: "100vh", // Viewport height
-    display: "block", // Remove default inline spacing for canvas
+    width: "100vw",
+    height: "100vh",
+    display: "block",
   };
 
   return (
@@ -58,10 +54,8 @@ const App = () => {
       camera={{ position: [0, 2, 2], fov: 75 }}
       style={canvasStyle}
     >
-      {/* Scene content */}
       <Scene />
-
-      {/* Orbit controls to rotate around the scene */}
+      <PostProcessing />
       <OrbitControls />
     </Canvas>
   );
