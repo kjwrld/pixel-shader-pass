@@ -1,11 +1,5 @@
-import { useRef, useMemo } from "react";
+import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three";
-import React from "react";
-
-const checkerTextureURL =
-  "https://threejsfundamentals.org/threejs/resources/images/checker.png";
 
 const boxData = [
   { size: 0.4, position: [0, 0.2, 0], rotation: [0, Math.PI / 4, 0] },
@@ -15,22 +9,8 @@ const boxData = [
 export const GeometryMeshes = () => {
   const planeMesh = useRef<THREE.Mesh>(null!);
 
-  const texture = useLoader(TextureLoader, checkerTextureURL);
-
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(3, 3);
-
-  const boxTexture = useMemo(() => {
-    const newTexture = texture.clone();
-    newTexture.repeat.set(1.5, 1.5);
-    return newTexture;
-  }, [texture]);
-
   const planeGeometry = new THREE.PlaneGeometry(2, 2);
-  const planeMaterial = new THREE.MeshPhongMaterial({
-    map: texture,
-  });
+  const planeMaterial = new THREE.MeshPhongMaterial({});
 
   const boxes = useMemo(
     () =>
@@ -47,14 +27,10 @@ export const GeometryMeshes = () => {
           receiveShadow
         >
           <boxGeometry args={[box.size, box.size, box.size]} />
-          <meshPhongMaterial
-            attach="material"
-            map={boxTexture}
-            shininess={100}
-          />
+          <meshPhongMaterial attach="material" shininess={100} />
         </mesh>
       )),
-    [boxTexture]
+    []
   );
 
   return (

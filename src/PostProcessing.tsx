@@ -21,11 +21,11 @@ const PostProcessing = () => {
     normalEdgeStrength,
     depthEdgeStrength,
   } = useControls({
-    bloomStrength: { value: 5, min: 0, max: 5, step: 0.1 },
-    bloomRadius: { value: 1, min: 0, max: 1, step: 0.01 },
-    bloomThreshold: { value: 0.32, min: 0, max: 1, step: 0.01 },
+    bloomStrength: { value: 0.2, min: 0, max: 5, step: 0.1 },
+    bloomRadius: { value: 0.08, min: 0, max: 1, step: 0.01 },
+    bloomThreshold: { value: 0.4, min: 0, max: 1, step: 0.01 },
     pixelSize: { value: 4, min: 1, max: 20, step: 1 },
-    normalEdgeStrength: { value: 1.9, min: 0, max: 2, step: 0.1 },
+    normalEdgeStrength: { value: 2, min: 0, max: 2, step: 0.1 },
     depthEdgeStrength: { value: 1, min: 0, max: 1, step: 0.1 },
   });
 
