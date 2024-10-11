@@ -90,8 +90,6 @@ export default class RenderPixelatedPass extends Pass {
                 uniform sampler2D tDepth;
                 uniform sampler2D tNormal;
                 uniform vec4 resolution;
-                uniform float normalEdgeStrength; // Added uniform
-                uniform float depthEdgeStrength;  // Added uniform
                 varying vec2 vUv;
 
                 float getDepth(int x, int y) {
@@ -141,17 +139,32 @@ export default class RenderPixelatedPass extends Pass {
                     return step(0.1, indicator);
                 }
 
+                float lum(vec4 color) {
+                    vec4 weights = vec4(.2126, .7152, .0722, .0);
+                    return dot(color, weights);
+                }
+
+                float smoothSign(float x, float radius) {
+                    return smoothstep(-radius, radius, x) * 2.0 - 1.0;
+                }
+
                 void main() {
                     vec4 texel = texture2D( tDiffuse, vUv );
+
+                    float tLum = lum(texel);
+                    // float normalEdgeCoefficient = (smoothSign(tLum - .3, .1) + .7) * .25;
+                    // float depthEdgeCoefficient = (smoothSign(tLum - .3, .1) + .7) * .3;
+                    float normalEdgeCoefficient = .3;
+                    float depthEdgeCoefficient = .4;
 
                     float dei = depthEdgeIndicator();
                     float nei = normalEdgeIndicator();
 
-                    float coefficient = dei > 0.0 ? (1.0 - depthEdgeStrength * dei) : (1.0 + normalEdgeStrength * nei);
+                    float coefficient = dei > 0.0 ? (1.0 - depthEdgeCoefficient * dei) : (1.0 + normalEdgeCoefficient * nei);
 
                     gl_FragColor = texel * coefficient;
                 }
-            `,
+                `,
     });
   }
 }
