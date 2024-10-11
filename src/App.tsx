@@ -2,7 +2,7 @@ import React from "react";
 import { Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import PostProcessing from "./PostProcessing.tsx";
-import { CanvasScene } from "./Scene.tsx";
+import { CanvasScene } from "./CanvasScene.tsx";
 
 const App = () => {
   const canvasStyle = {

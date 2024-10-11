@@ -6,7 +6,7 @@ import React from "react";
 export const CrystalMesh = () => {
   const crystalMesh = useRef<THREE.Mesh>(null!);
 
-  const geometry = new THREE.IcosahedronGeometry(0.4);
+  const geometry = new THREE.IcosahedronGeometry(0.2);
   const material = new THREE.MeshPhongMaterial({
     color: 0x2379cf,
     emissive: 0x143542,
