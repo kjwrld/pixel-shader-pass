@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Vector2, WebGLRenderer, WebGLRenderTarget } from "three";
+import { WebGLRenderer, WebGLRenderTarget } from "three";
 import { Pass, FullScreenQuad } from "three-stdlib";
 
 export default class RenderPixelatedPass extends Pass {
