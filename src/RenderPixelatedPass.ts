@@ -90,21 +90,26 @@ export default class RenderPixelatedPass extends Pass {
                 uniform sampler2D tDepth;
                 uniform sampler2D tNormal;
                 uniform vec4 resolution;
+
+                // Leva controls as uniforms
+                uniform float normalEdgeStrength;
+                uniform float depthEdgeStrength;
+
                 varying vec2 vUv;
 
                 float getDepth(int x, int y) {
-                    return texture2D( tDepth, vUv + vec2(x, y) * resolution.zw ).r;
+                    return texture2D(tDepth, vUv + vec2(x, y) * resolution.zw).r;
                 }
 
                 vec3 getNormal(int x, int y) {
-                    return texture2D( tNormal, vUv + vec2(x, y) * resolution.zw ).rgb * 2.0 - 1.0;
+                    return texture2D(tNormal, vUv + vec2(x, y) * resolution.zw).rgb * 2.0 - 1.0;
                 }
 
                 float neighborNormalEdgeIndicator(int x, int y, float depth, vec3 normal) {
                     float depthDiff = getDepth(x, y) - depth;
                     
                     // Edge pixels should yield to faces closer to the bias direction.
-                    vec3 normalEdgeBias = vec3(1., 1., 1.); // This should probably be a parameter.
+                    vec3 normalEdgeBias = vec3(1., 1., 1.); // This could be controlled as a uniform
                     float normalDiff = dot(normal - getNormal(x, y), normalEdgeBias);
                     float normalIndicator = clamp(smoothstep(-.01, .01, normalDiff), 0.0, 1.0);
                     
@@ -149,17 +154,16 @@ export default class RenderPixelatedPass extends Pass {
                 }
 
                 void main() {
-                    vec4 texel = texture2D( tDiffuse, vUv );
+                    vec4 texel = texture2D(tDiffuse, vUv);
 
                     float tLum = lum(texel);
-                    // float normalEdgeCoefficient = (smoothSign(tLum - .3, .1) + .7) * .25;
-                    // float depthEdgeCoefficient = (smoothSign(tLum - .3, .1) + .7) * .3;
-                    float normalEdgeCoefficient = .3;
-                    float depthEdgeCoefficient = .4;
+                    float normalEdgeCoefficient = normalEdgeStrength; // Use uniform for normal edge strength
+                    float depthEdgeCoefficient = depthEdgeStrength; // Use uniform for depth edge strength
 
                     float dei = depthEdgeIndicator();
                     float nei = normalEdgeIndicator();
 
+                    // Adjust the coefficient calculation based on the edge indicators
                     float coefficient = dei > 0.0 ? (1.0 - depthEdgeCoefficient * dei) : (1.0 + normalEdgeCoefficient * nei);
 
                     gl_FragColor = texel * coefficient;
